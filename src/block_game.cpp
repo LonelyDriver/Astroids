@@ -1,4 +1,5 @@
 #include "block_game.h"
+#include "block_timer.h"
 
 block::Game::Game() :
 _window(),
@@ -42,12 +43,26 @@ _running(false) {
 
 void block::Game::Run() {
     _running = true;
+    Uint32 time_since_last_update = 0;
+    const Uint32 ticks_per_frame = 1000 / 60;
+    block::Timer timer;
+    _logger->Debug(STREAM("Ticks per frame: "<<ticks_per_frame));
+    SDL_Delay(2000);
     while(_running) {
+        timer.Start();
         ProcessEvents();
-        Update();
-        Render();
-
-        SDL_Delay(1000/60);
+        bool repaint = false;
+        _logger->Debug(STREAM("Last update: "<<time_since_last_update));
+        time_since_last_update += timer.GetTicks();
+        while(time_since_last_update > ticks_per_frame) {
+            time_since_last_update -= ticks_per_frame;
+            Update(); // Update(ticks_per_frame)
+            repaint= true;
+            _logger->Debug("UPDATE");
+        }
+        if(repaint) {
+            Render();
+        }
     }
 }
 
