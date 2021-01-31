@@ -3,23 +3,27 @@
 
 #include "logging_manager.h"
 #include "SDL2/SDL.h"
+#include "block_resource_manager.h"
+#include "block_player.h"
 
 namespace block {
     class Game {
     private:
         SDL_Window* _window;
         SDL_Renderer* _renderer;
-        SDL_Rect _player;
+        block::Player _player;
         Logger _logger;
         bool _running;
+        ResourceManager<TextureLoader, std::string> _texture_resource;
 
         void ProcessEvents();
-        void Update();
+        void Update(Uint32 time_ms);
         void Render();
     public:
         Game(const Game&) = delete;
         Game& operator=(const Game&) = delete;
         Game();
+        ~Game();
 
         void Run();
     };

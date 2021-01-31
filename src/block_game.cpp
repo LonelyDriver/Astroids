@@ -6,7 +6,8 @@ _window(),
 _renderer(),
 _player(),
 _logger(LogManager::GetLogger("Game")),
-_running(false) {
+_running(false),
+_texture_resource() {
     SDL_Init(SDL_INIT_VIDEO);
 
     _window = SDL_CreateWindow(
@@ -31,14 +32,18 @@ _running(false) {
         exit(-1);
     }
 
-    SDL_SetRenderDrawColor(_renderer, 0,0,0,SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(_renderer, 0,0,0,255);
     SDL_RenderClear(_renderer);
     SDL_RenderPresent(_renderer);
 
-    _player.x = 20;
-    _player.y = 10;
-    _player.w = 100;
-    _player.h = 100;
+    _texture_resource.Load("player", _renderer, "../assets/Ship.png");
+
+    _player.SetTexture(_texture_resource.Get("player").Get());
+}
+
+block::Game::~Game() {
+    SDL_DestroyRenderer(_renderer);
+    SDL_DestroyWindow(_window);
 }
 
 void block::Game::Run() {
@@ -47,18 +52,15 @@ void block::Game::Run() {
     const Uint32 ticks_per_frame = 1000 / 60;
     block::Timer timer;
     _logger->Debug(STREAM("Ticks per frame: "<<ticks_per_frame));
-    SDL_Delay(2000);
     while(_running) {
         timer.Start();
         ProcessEvents();
         bool repaint = false;
-        _logger->Debug(STREAM("Last update: "<<time_since_last_update));
         time_since_last_update += timer.GetTicks();
         while(time_since_last_update > ticks_per_frame) {
             time_since_last_update -= ticks_per_frame;
-            Update(); // Update(ticks_per_frame)
-            repaint= true;
-            _logger->Debug("UPDATE");
+            Update(ticks_per_frame);
+            repaint = true;
         }
         if(repaint) {
             Render();
@@ -78,9 +80,29 @@ void block::Game::ProcessEvents() {
             case SDLK_ESCAPE:
                 _running = false;
                 break;
-            
+            case SDLK_w:
+                _player.Moving(true);
+                break;
+            case SDLK_a:
+                _player.Rotation(-1);
+                break;
+            case SDLK_d:
+                _player.Rotation(1);
+                break;
             default:
                 break;
+            }
+        }else if(event.type == SDL_KEYUP) {
+            switch (event.key.keysym.sym) {
+                case SDLK_w:
+                    _player.Moving(false);
+                    break;
+                case SDLK_a:
+                    _player.Rotation(0);
+                    break;
+                case SDLK_d:
+                    _player.Rotation(0);
+                    break;
             }
         }
 
@@ -88,15 +110,13 @@ void block::Game::ProcessEvents() {
     }
 }
 
-void block::Game::Update() {
-
+void block::Game::Update(Uint32 time_ms) {
+    _player.Update(time_ms);
 }
 
 void block::Game::Render() {
     SDL_RenderClear(_renderer);
-    SDL_SetRenderDrawColor(_renderer, 0, 191, 255, 0x00);
-    SDL_RenderFillRect(_renderer, &_player);
-    SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0xFF);
+    _player.Render(_renderer);
 
     SDL_RenderPresent(_renderer);
 }

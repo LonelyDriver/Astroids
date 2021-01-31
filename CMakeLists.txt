@@ -20,7 +20,9 @@ endif()
 add_library(block_library 
     SHARED
     src/block_game.cpp
-    src/block_timer.cpp)
+    src/block_timer.cpp
+    src/block_texture_loader.cpp
+    src/block_player.cpp)
 target_include_directories(block_library PRIVATE src lib/Logging/include lib/Vector/include)
 target_link_libraries(block_library vector logger SDL2 SDL2_image SDL2_ttf)
 
