@@ -108,3 +108,11 @@ void block::Player::SetDefaultInputs() {
         _rotation = 1;
     });
 }
+
+const Vector& block::Player::GetPosition() {
+    return _position;
+}
+
+void block::Player::SetPosition(const Vector& vector) {
+    _position.Set(vector);
+}

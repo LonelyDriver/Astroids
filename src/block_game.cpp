@@ -1,26 +1,39 @@
 #include "block_game.h"
 #include "block_timer.h"
+#include "SDL2/SDL_mixer.h"
+#include "block_exeption.h"
 
-block::Game::Game() :
+block::Game::Game(const Vector& window_pos, const Vector& window_size) :
 _window(),
 _renderer(),
 _player(),
 _logger(LogManager::GetLogger("Game")),
 _running(false),
-_texture_resource() {
-    SDL_Init(SDL_INIT_VIDEO);
+_texture_resource(),
+_world_size(window_size) {
+    InitializeSDL(window_pos, window_size);
+    InitializeSDLAudio();
+}
+
+void block::Game::InitializeSDL(const Vector& window_pos, const Vector& window_size) {
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
     _window = SDL_CreateWindow(
         "Block Wars",
-        400,
-        400,
-        800,
-        600,
+        window_pos.GetX(),
+        window_pos.GetY(),
+        window_size.GetX(),
+        window_size.GetY(),
         0
     );
     if(_window == nullptr) {
-        _logger->Debug(STREAM("Creating window failed"<<SDL_GetError()));
-        exit(-1);
+        throw BlockException(
+            std::string("Creating window failed").c_str(),
+            __FILE__,
+            __LINE__,
+            BLOCK_ERROR::WINDOW_INIT,
+            SDL_GetError()
+        );
     }
     _renderer = SDL_CreateRenderer(
         _window,
@@ -28,13 +41,30 @@ _texture_resource() {
         SDL_RENDERER_ACCELERATED
     );
     if(_renderer == nullptr) {
-        _logger->Debug(STREAM("Creating renderer failed"<<SDL_GetError()));
-        exit(-1);
+        throw BlockException(
+            std::string("Creating renderer failed").c_str(),
+            __FILE__,
+            __LINE__,
+            BLOCK_ERROR::RENDERER_INIT,
+            SDL_GetError()
+        );
     }
 
     SDL_SetRenderDrawColor(_renderer, 0,0,0,255);
     SDL_RenderClear(_renderer);
     SDL_RenderPresent(_renderer);
+}
+
+void block::Game::InitializeSDLAudio() {
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        throw BlockException(
+            std::string("Audio initilization failed").c_str(),
+            __FILE__,
+            __LINE__,
+            BLOCK_ERROR::AUDIO_INIT,
+            Mix_GetError()
+        );
+    }
 }
 
 void block::Game::InitializeTextures() {
@@ -96,6 +126,18 @@ void block::Game::ProcessEvents() {
 
 void block::Game::Update(Uint32 time_ms) {
     _player.Update(time_ms);
+
+    const auto& player_pos = _player.GetPosition();
+
+    if(player_pos.GetX() < 0) {
+        _player.SetPosition(Vector(_world_size.GetX(), _world_size.GetY() - player_pos.GetY()));
+    }else if(player_pos.GetX() > _world_size.GetX()) {
+        _player.SetPosition(Vector(0, _world_size.GetY() - player_pos.GetY()));
+    }else if(player_pos.GetY() < 0) {
+        _player.SetPosition(Vector(_world_size.GetX() - player_pos.GetX(), _world_size.GetY()));
+    }else if(player_pos.GetY() > _world_size.GetY()) {
+        _player.SetPosition(Vector(_world_size.GetX() - player_pos.GetX(), 0));
+    }
 }
 
 void block::Game::Render() {

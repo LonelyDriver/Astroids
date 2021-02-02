@@ -9,7 +9,7 @@ const int SCREEN_HEIGHT = 480;
 int main() {
     Logger logger = LogManager::GetLogger("MAIN");
     try{
-        block::Game game;
+        block::Game game(Vector(300, 200), Vector(1080, 720));
         game.InitializeTextures();
         game.InitializeEntities();
         game.Run();

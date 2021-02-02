@@ -3,6 +3,13 @@
 #include <stdexcept>
 
 namespace block {
+    enum BLOCK_ERROR {
+        ERRROR_OK,
+        WINDOW_INIT,
+        RENDERER_INIT,
+        AUDIO_INIT
+    };
+
     class BlockException : public std::exception {
     private:
         const char* _msg;

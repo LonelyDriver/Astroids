@@ -15,14 +15,18 @@ namespace block {
         Logger _logger;
         bool _running;
         ResourceManager<TextureLoader, std::string> _texture_resource;
+        Vector _world_size;
 
         void ProcessEvents();
         void Update(Uint32 time_ms);
         void Render();
+
+        void InitializeSDL(const Vector& window_pos, const Vector& window_size);
+        void InitializeSDLAudio();
     public:
         Game(const Game&) = delete;
         Game& operator=(const Game&) = delete;
-        Game();
+        Game(const Vector& window_pos, const Vector& window_size);
         ~Game();
 
         void Run();

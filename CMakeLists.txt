@@ -10,6 +10,7 @@ add_compile_options(/W4)
 endif()
 
 find_package(Threads)
+find_package(SDL)
 
 add_subdirectory(lib)
 
@@ -25,7 +26,7 @@ add_library(block_library
     src/block_player.cpp
     src/block_action.cpp)
 target_include_directories(block_library PRIVATE src lib/Logging/include lib/Vector/include)
-target_link_libraries(block_library vector logger SDL2 SDL2_image SDL2_ttf)
+target_link_libraries(block_library vector logger SDL2 SDL2_image SDL2_ttf SDL2_mixer)
 
 add_executable(block_wars src/examples/block_wars.cpp)
 target_include_directories(block_wars PRIVATE src)

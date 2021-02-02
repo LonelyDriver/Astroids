@@ -40,6 +40,7 @@ namespace block
         void Rotation(int rotation);
         void Render(SDL_Renderer* renderer) const;
         void SetTexture(SDL_Texture* texture);
+        const Vector& GetPosition();
     };
     
 } // namespace block
