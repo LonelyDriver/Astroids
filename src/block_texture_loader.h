@@ -16,7 +16,7 @@ namespace block {
         ~TextureLoader();
 
         void Load(SDL_Renderer* renderer, const std::string& path);
-        SDL_Texture* Get() const;
+        SDL_Texture* GetTexture() const;
     };
 
 }

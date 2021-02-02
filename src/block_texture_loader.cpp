@@ -38,6 +38,6 @@ void block::TextureLoader::Load(SDL_Renderer* renderer, const std::string& path)
     _texture = texture;
 }
 
-SDL_Texture* block::TextureLoader::Get() const {
+SDL_Texture* block::TextureLoader::GetTexture() const {
     return _texture;
 }

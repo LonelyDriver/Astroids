@@ -26,6 +26,8 @@ namespace block {
         ~Game();
 
         void Run();
+        void InitializeTextures();
+        void InitializeEntities();
     };
 }
 

@@ -35,15 +35,22 @@ _texture_resource() {
     SDL_SetRenderDrawColor(_renderer, 0,0,0,255);
     SDL_RenderClear(_renderer);
     SDL_RenderPresent(_renderer);
+}
 
+void block::Game::InitializeTextures() {
     _texture_resource.Load("player", _renderer, "../assets/Ship.png");
+}
 
-    _player.SetTexture(_texture_resource.Get("player").Get());
+void block::Game::InitializeEntities() {
+    const auto& player_texture = _texture_resource.Get("player");
+    _player.SetTexture(player_texture.GetTexture());
+    _player.SetDefaultInputs();
 }
 
 block::Game::~Game() {
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
+    SDL_Quit();
 }
 
 void block::Game::Run() {
@@ -51,12 +58,13 @@ void block::Game::Run() {
     Uint32 time_since_last_update = 0;
     const Uint32 ticks_per_frame = 1000 / 60;
     block::Timer timer;
-    _logger->Debug(STREAM("Ticks per frame: "<<ticks_per_frame));
+    
     while(_running) {
         timer.Start();
         ProcessEvents();
         bool repaint = false;
         time_since_last_update += timer.GetTicks();
+        
         while(time_since_last_update > ticks_per_frame) {
             time_since_last_update -= ticks_per_frame;
             Update(ticks_per_frame);
@@ -80,34 +88,10 @@ void block::Game::ProcessEvents() {
             case SDLK_ESCAPE:
                 _running = false;
                 break;
-            case SDLK_w:
-                _player.Moving(true);
-                break;
-            case SDLK_a:
-                _player.Rotation(-1);
-                break;
-            case SDLK_d:
-                _player.Rotation(1);
-                break;
-            default:
-                break;
-            }
-        }else if(event.type == SDL_KEYUP) {
-            switch (event.key.keysym.sym) {
-                case SDLK_w:
-                    _player.Moving(false);
-                    break;
-                case SDLK_a:
-                    _player.Rotation(0);
-                    break;
-                case SDLK_d:
-                    _player.Rotation(0);
-                    break;
             }
         }
-
-
     }
+    _player.ProcessEvents();
 }
 
 void block::Game::Update(Uint32 time_ms) {

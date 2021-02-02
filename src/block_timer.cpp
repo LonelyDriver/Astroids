@@ -63,3 +63,37 @@ bool block::Timer::IsPaused() const {
 bool block::Timer::IsStarted() const {
     return _started;
 }
+
+
+// StdTimer
+
+block::StdTimer::StdTimer() :
+_start(),
+_started(false)
+{
+
+}
+
+void block::StdTimer::Start() {
+    _start = std::chrono::high_resolution_clock::now();
+    _started = true;
+}
+
+int64_t block::StdTimer::Milliseconds() const {
+    int64_t time = 0;
+    if(_started) {
+        std::chrono::high_resolution_clock::time_point tmp = std::chrono::high_resolution_clock::now();
+        time = std::chrono::duration_cast<std::chrono::milliseconds>(tmp - _start).count();
+    }
+    return time;
+}
+
+int64_t block::StdTimer::Round() {
+    if(_started) {
+       std::chrono::high_resolution_clock::time_point tmp = std::chrono::high_resolution_clock::now();
+       const auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(tmp - _start).count();  
+       _start = tmp;
+       return dt;
+    }
+    return 0;
+}

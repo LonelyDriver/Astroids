@@ -8,13 +8,22 @@ _logger(LogManager::GetLogger("Player")),
 _is_moving(false),
 _rotation(0),
 _angle(0),
-_texture() {
+_texture(),
+_inputs(),
+ActionTarget(_inputs) {
+    SetDefaultInputs();
+}
+
+void block::Player::ProcessEvents() {
+    _is_moving = false;
+    _rotation = 0;
+    ActionTarget::ProcessEvent();
 }
 
 void block::Player::Update(const Uint32 delta_time_ms) {
     float seconds = delta_time_ms / 1000.0;
     if(_rotation != 0) {
-        _angle += (_rotation>0?1:-1)*180*seconds;
+        _angle += _rotation*180*seconds;
     }
     if(_is_moving) {
         float angle = _angle / 180 * block::PI - block::PI / 2;
@@ -80,4 +89,22 @@ void block::Player::Render(SDL_Renderer* renderer) const {
     ) != 0) {
         _logger->Debug(STREAM("Could not render: "<<SDL_GetError()));
     }
+}
+
+void block::Player::SetDefaultInputs() {
+    _inputs.Add(static_cast<int>(PlayerInputs::Up), Action(SDL_KEYDOWN, SDL_SCANCODE_W));
+    _inputs.Add(static_cast<int>(PlayerInputs::Left), Action(SDL_KEYDOWN, SDL_SCANCODE_A));
+    _inputs.Add(static_cast<int>(PlayerInputs::Right), Action(SDL_KEYDOWN, SDL_SCANCODE_D));
+
+    Bind(static_cast<int>(PlayerInputs::Up), [this](const SDL_Event& event) {
+        _is_moving = true;
+    });
+
+    Bind(static_cast<int>(PlayerInputs::Left), [this](const SDL_Event& event) {
+        _rotation = -1;
+    });
+
+    Bind(static_cast<int>(PlayerInputs::Right), [this](const SDL_Event& event) {
+        _rotation = 1;
+    });
 }

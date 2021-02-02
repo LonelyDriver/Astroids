@@ -1,6 +1,7 @@
 #ifndef _BLOCK_TIMER_H
 #define _BLOCK_TIMER_H
 #include "SDL2/SDL.h"
+#include <chrono>
 
 namespace block {
     class Timer {
@@ -20,6 +21,20 @@ namespace block {
         Uint32 GetTicks() const;
         bool IsStarted() const;
         bool IsPaused() const;
+    };
+
+    class StdTimer {
+    private:
+        std::chrono::high_resolution_clock::time_point _start;
+        bool _started;
+    public:
+        StdTimer();
+
+        void Start();
+        int64_t Round();
+        int64_t Milliseconds() const;
+
+
     };
 }
 
