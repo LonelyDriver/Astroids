@@ -16,6 +16,8 @@ namespace block
         std::list<std::unique_ptr<Entity>> _event_entities;
         Logger _logger;
         Vector _size;
+
+        void borderControl(Entity* entity);
     public:
         World(const World&) = delete;
         World& operator=(const World&) = delete;

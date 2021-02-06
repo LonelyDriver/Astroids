@@ -45,10 +45,26 @@ const Vector& block::World::WorldDimension() {
 void block::World::Update(Uint32 time_ms) {
     for(auto& entitiy : _entities) {
         entitiy->Update(time_ms);
+        borderControl(entitiy.get());
     }
 
     for(auto& entitiy : _event_entities) {
         entitiy->Update(time_ms);
+        borderControl(entitiy.get());
+    }
+}
+
+void block::World::borderControl(Entity* entity) {
+    const auto& pos = entity->GetPosition();
+
+    if(pos.GetX() < 0) {
+        entity->SetPosition(Vector(_size.GetX(), _size.GetY() - pos.GetY()));
+    }else if(pos.GetX() > _size.GetX()) {
+        entity->SetPosition(Vector(0, _size.GetY() - pos.GetY()));
+    }else if(pos.GetY() < 0) {
+        entity->SetPosition(Vector(_size.GetX() - pos.GetX(), _size.GetY()));
+    }else if(pos.GetY() > _size.GetY()) {
+        entity->SetPosition(Vector(_size.GetX() - pos.GetX(), 0));
     }
 }
 

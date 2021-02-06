@@ -3,9 +3,10 @@
 block::Entity::Entity(
     SDL_Texture* texture,
     Logger logger,
-    const Vector& dimension) :
+    const Vector& dimension,
+    const Vector& position) :
     _dimension(dimension),
-    _position(0,0),
+    _position(position),
     _velocity(0,0),
     _logger(logger),
     _texture(texture),

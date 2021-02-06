@@ -3,12 +3,16 @@
 #include "block_collision.h"
 
 block::Player::Player(
-    SDL_Texture* texture) :
+    SDL_Texture* texture,
+    std::shared_ptr<World> world,
+    const Vector& position) :
 _is_moving(false),
 _rotation(0),
 _angle(0),
+_shoot_dt(0),
 _inputs(),
-Entity(texture, LogManager::GetLogger("Player"), Vector(SHIPWIDTH/2, SHIPHEIGHT/2)),
+_world(world),
+Entity(texture, LogManager::GetLogger("Player"), Vector(SHIPWIDTH/2, SHIPHEIGHT/2), position),
 ActionTarget(_inputs) {
     SetDefaultInputs();
 }
@@ -21,6 +25,8 @@ void block::Player::ProcessEvents() {
 
 void block::Player::Update(const Uint32 delta_time_ms) {
     float seconds = delta_time_ms / 1000.0;
+    
+    _shoot_dt += delta_time_ms;
     if(_rotation != 0) {
         _angle += _rotation*180*seconds;
     }
@@ -94,6 +100,8 @@ void block::Player::SetDefaultInputs() {
     _inputs.Add(static_cast<int>(PlayerInputs::Up), Action(SDL_KEYDOWN, SDL_SCANCODE_W));
     _inputs.Add(static_cast<int>(PlayerInputs::Left), Action(SDL_KEYDOWN, SDL_SCANCODE_A));
     _inputs.Add(static_cast<int>(PlayerInputs::Right), Action(SDL_KEYDOWN, SDL_SCANCODE_D));
+    _inputs.Add(static_cast<int>(PlayerInputs::Shoot), Action(SDL_KEYDOWN, SDL_SCANCODE_K));
+    _inputs.Add(static_cast<int>(PlayerInputs::Hyperspace), Action(SDL_KEYDOWN, SDL_SCANCODE_L));
 
     Bind(static_cast<int>(PlayerInputs::Up), [this](const SDL_Event& event) {
         _is_moving = true;
@@ -106,6 +114,13 @@ void block::Player::SetDefaultInputs() {
     Bind(static_cast<int>(PlayerInputs::Right), [this](const SDL_Event& event) {
         _rotation = 1;
     });
+    Bind(static_cast<int>(PlayerInputs::Shoot), [this](const SDL_Event& event) {
+        Shoot();
+    });
+    Bind(static_cast<int>(PlayerInputs::Hyperspace), [this](const SDL_Event& event) {
+        HyperSpace();
+    });
+    
 }
 
 const Vector& block::Player::GetPosition() {
@@ -126,4 +141,15 @@ bool block::Player::IsCollide(const Entity& other) const {
 
 void block::Player::OnDestroy() {
 
+}
+
+void block::Player::Shoot() {
+    if(_shoot_dt > _shoot_cooldown) {
+        _logger->Debug("Shoot");
+        _shoot_dt = 0;
+    }
+}
+
+void block::Player::HyperSpace() {
+    _logger->Debug("Hyperspace");
 }

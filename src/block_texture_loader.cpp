@@ -8,7 +8,7 @@ _texture() {
 
 block::TextureLoader::~TextureLoader() {
     if(_texture != NULL) {
-        free(_texture);
+        SDL_DestroyTexture(_texture);
     }
 }
 

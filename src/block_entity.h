@@ -21,7 +21,7 @@ namespace block
     public:
         Entity(const Entity&) = delete;
         Entity& operator=(const Entity&) = delete;
-        Entity(SDL_Texture* texture, Logger logger, const Vector& dimension);
+        Entity(SDL_Texture* texture, Logger logger, const Vector& dimension, const Vector& position=Vector(500,350));
         virtual ~Entity() {}
 
         virtual bool IsAlive() const;

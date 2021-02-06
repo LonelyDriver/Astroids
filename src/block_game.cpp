@@ -11,7 +11,7 @@ _logger(LogManager::GetLogger("Game")),
 _running(false),
 _texture_resource(),
 _world_size(window_size),
-_world(std::make_unique<World>(LogManager::GetLogger("World"), window_size)) {
+_world(std::make_shared<World>(LogManager::GetLogger("World"), window_size)) {
     InitializeSDL(window_pos, window_size);
     InitializeSDLAudio();
 }
@@ -74,7 +74,7 @@ void block::Game::InitializeTextures() {
 
 void block::Game::InitializeEntities() {
     const auto& player_texture = _texture_resource.Get("player");
-    auto player = std::make_unique<Player>(player_texture.GetTexture());
+    auto player = std::make_unique<Player>(player_texture.GetTexture(), _world, Vector(200,200));
     _world->AddEventEntity(std::move(player));
 }
 
@@ -82,6 +82,7 @@ block::Game::~Game() {
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
     SDL_Quit();
+    _logger->Debug("Cleaned up");
 }
 
 void block::Game::Run() {
