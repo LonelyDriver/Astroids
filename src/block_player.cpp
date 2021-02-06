@@ -1,15 +1,14 @@
 #include "block_player.h"
 #include "block_configuration.h"
+#include "block_collision.h"
 
-block::Player::Player() :
-_position(200,200),
-_velocity(0,0),
-_logger(LogManager::GetLogger("Player")),
+block::Player::Player(
+    SDL_Texture* texture) :
 _is_moving(false),
 _rotation(0),
 _angle(0),
-_texture(),
 _inputs(),
+Entity(texture, LogManager::GetLogger("Player"), Vector(SHIPWIDTH/2, SHIPHEIGHT/2)),
 ActionTarget(_inputs) {
     SetDefaultInputs();
 }
@@ -59,8 +58,8 @@ void block::Player::SetTexture(SDL_Texture* texture) {
 void block::Player::Render(SDL_Renderer* renderer) const {
     SDL_Rect src_rect, dest_rect;
 
-    dest_rect.w = block::SHIPWIDTH / 2;
-    dest_rect.h = block::SHIPHEIGHT / 2;
+    dest_rect.w = _dimension.GetX();
+    dest_rect.h = _dimension.GetY();
     dest_rect.x = _position.GetX();
     dest_rect.y = _position.GetY();
 
@@ -115,4 +114,16 @@ const Vector& block::Player::GetPosition() {
 
 void block::Player::SetPosition(const Vector& vector) {
     _position.Set(vector);
+}
+
+bool block::Player::IsCollide(const Entity& other) const {
+   /* if(dynamic_cast<const ShootPlayer*>(&other) == nullptr) {
+        return Collision::CircleTest(this, other);
+    }
+    */
+    return false;
+}
+
+void block::Player::OnDestroy() {
+
 }

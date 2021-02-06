@@ -4,41 +4,41 @@
 #include "logging_manager.h"
 #include "vector2d.h"
 #include "block_actiontarget.h"
+#include "block_entity.h"
 
 
 using  Vector = vector::Vector2D;
 
 namespace block
 {
-    class Player : public ActionTarget<int> {
+    class Player : public Entity, ActionTarget<int> {
     private:
-        Vector _position;
-        Vector _velocity;
-        Logger _logger;
         bool _is_moving;
         int _rotation;
         float _angle;
-        SDL_Texture* _texture;
+        Uint32 _shoot_cooldown;
         ActionMap<int> _inputs;
     public:
         Player(const Player&) = delete;
         Player& operator=(const Player&) = delete;
-        Player();
+        Player(SDL_Texture* texture);
 
         enum class PlayerInputs : int {
             Up,
             Left,
             Right,
         };
-        void SetDefaultInputs();
+        virtual bool IsCollide(const Entity& other) const override; 
+        virtual void Update(const Uint32 delta_time_ms) override;
+        virtual void OnDestroy() override;
 
+        void SetDefaultInputs();
         void SetPosition(const Vector& vector);
-        void Update(const Uint32 delta_time_ms);
-        void ProcessEvents();
+        virtual void ProcessEvents() override;
         bool IsMoving() const;
         void Moving(bool is_moving);
         void Rotation(int rotation);
-        void Render(SDL_Renderer* renderer) const;
+        virtual void Render(SDL_Renderer* renderer) const override;
         void SetTexture(SDL_Texture* texture);
         const Vector& GetPosition();
     };

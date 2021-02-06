@@ -2,15 +2,16 @@
 #include "block_timer.h"
 #include "SDL2/SDL_mixer.h"
 #include "block_exeption.h"
+#include "block_player.h"
 
 block::Game::Game(const Vector& window_pos, const Vector& window_size) :
 _window(),
 _renderer(),
-_player(),
 _logger(LogManager::GetLogger("Game")),
 _running(false),
 _texture_resource(),
-_world_size(window_size) {
+_world_size(window_size),
+_world(std::make_unique<World>(LogManager::GetLogger("World"), window_size)) {
     InitializeSDL(window_pos, window_size);
     InitializeSDLAudio();
 }
@@ -73,8 +74,8 @@ void block::Game::InitializeTextures() {
 
 void block::Game::InitializeEntities() {
     const auto& player_texture = _texture_resource.Get("player");
-    _player.SetTexture(player_texture.GetTexture());
-    _player.SetDefaultInputs();
+    auto player = std::make_unique<Player>(player_texture.GetTexture());
+    _world->AddEventEntity(std::move(player));
 }
 
 block::Game::~Game() {
@@ -121,10 +122,12 @@ void block::Game::ProcessEvents() {
             }
         }
     }
-    _player.ProcessEvents();
+    _world->ProcessEvents();
 }
 
 void block::Game::Update(Uint32 time_ms) {
+    _world->Update(time_ms);
+    /*
     _player.Update(time_ms);
 
     const auto& player_pos = _player.GetPosition();
@@ -138,11 +141,12 @@ void block::Game::Update(Uint32 time_ms) {
     }else if(player_pos.GetY() > _world_size.GetY()) {
         _player.SetPosition(Vector(_world_size.GetX() - player_pos.GetX(), 0));
     }
+    */
 }
 
 void block::Game::Render() {
     SDL_RenderClear(_renderer);
-    _player.Render(_renderer);
+    _world->Render(_renderer);
 
     SDL_RenderPresent(_renderer);
 }
