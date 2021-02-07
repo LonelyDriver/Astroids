@@ -7,9 +7,8 @@
 #include "block_actiontarget.h"
 #include "block_entity.h"
 #include "block_world.h"
+#include "block_hyperspace.h"
 
-
-using  Vector = vector::Vector2D;
 
 namespace block
 {
@@ -20,6 +19,7 @@ namespace block
         int _rotation;
         float _angle;
         Uint32 _shoot_dt;
+        Hyperspace _hyperspace;
         ActionMap<int> _inputs;
         std::shared_ptr<World> _world;
     public:

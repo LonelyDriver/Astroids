@@ -1,6 +1,7 @@
 #include "block_player.h"
-#include "block_configuration.h"
 #include "block_collision.h"
+#include "block_configuration.h"
+#include "block_exeption.h"
 
 block::Player::Player(
     SDL_Texture* texture,
@@ -10,6 +11,7 @@ _is_moving(false),
 _rotation(0),
 _angle(0),
 _shoot_dt(0),
+_hyperspace(30, 2000),
 _inputs(),
 _world(world),
 Entity(texture, LogManager::GetLogger("Player"), Vector(SHIPWIDTH/2, SHIPHEIGHT/2), position),
@@ -151,5 +153,13 @@ void block::Player::Shoot() {
 }
 
 void block::Player::HyperSpace() {
-    _logger->Debug("Hyperspace");
+    static const auto& world_dimension = _world->WorldDimension();
+    try {
+        const auto new_pos = _hyperspace.GoToHyperspace(world_dimension.GetX(), world_dimension.GetY());
+        SetPosition(new_pos);
+        _velocity *= 0;
+    }catch(const BlockException& e) {
+        
+    }
+    
 }

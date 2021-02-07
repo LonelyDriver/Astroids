@@ -128,21 +128,6 @@ void block::Game::ProcessEvents() {
 
 void block::Game::Update(Uint32 time_ms) {
     _world->Update(time_ms);
-    /*
-    _player.Update(time_ms);
-
-    const auto& player_pos = _player.GetPosition();
-
-    if(player_pos.GetX() < 0) {
-        _player.SetPosition(Vector(_world_size.GetX(), _world_size.GetY() - player_pos.GetY()));
-    }else if(player_pos.GetX() > _world_size.GetX()) {
-        _player.SetPosition(Vector(0, _world_size.GetY() - player_pos.GetY()));
-    }else if(player_pos.GetY() < 0) {
-        _player.SetPosition(Vector(_world_size.GetX() - player_pos.GetX(), _world_size.GetY()));
-    }else if(player_pos.GetY() > _world_size.GetY()) {
-        _player.SetPosition(Vector(_world_size.GetX() - player_pos.GetX(), 0));
-    }
-    */
 }
 
 void block::Game::Render() {

@@ -7,8 +7,10 @@ namespace block {
         ERRROR_OK,
         WINDOW_INIT,
         RENDERER_INIT,
-        AUDIO_INIT
+        AUDIO_INIT,
+        NOT_READY
     };
+
 
     class BlockException : public std::exception {
     private:
