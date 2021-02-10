@@ -11,7 +11,15 @@ namespace block
         Collision& operator=(const Collision&) = delete;
 
         static bool CircleTest(const Entity* first, const Entity* second) {
-            return false;
+            const auto first_rect = first->GetDimension();
+            const auto second_rect = second->GetDimension();
+
+            float radius1 = (first_rect.GetX() + first_rect.GetY()) / 4;
+            float radius2 = (second_rect.GetX() + second_rect.GetY()) / 4;
+            float xd = first->GetPosition().GetX() - second->GetPosition().GetX();
+            float yd = first->GetPosition().GetY() - second->GetPosition().GetY();
+
+            return std::sqrt(xd * xd + yd * yd) <= radius1 + radius2;
         }
     };
     

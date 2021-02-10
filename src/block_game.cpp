@@ -3,6 +3,7 @@
 #include "SDL2/SDL_mixer.h"
 #include "block_exeption.h"
 #include "block_player.h"
+#include "block_saucer.h"
 
 block::Game::Game(const Vector& window_pos, const Vector& window_size) :
 _window(),
@@ -70,12 +71,16 @@ void block::Game::InitializeSDLAudio() {
 
 void block::Game::InitializeTextures() {
     _texture_resource.Load("player", _renderer, "../assets/Ship.png");
+    _texture_resource.Load("enemy", _renderer, "../assets/Small.png");
 }
 
 void block::Game::InitializeEntities() {
     const auto& player_texture = _texture_resource.Get("player");
+    const auto& enemy_texture = _texture_resource.Get("enemy");
     auto player = std::make_unique<Player>(player_texture.GetTexture(), _world, Vector(200,200));
+    auto enemy = std::make_unique<Saucer>(enemy_texture.GetTexture(), Vector(500,500), LogManager::GetLogger("Saucer"));
     _world->AddEventEntity(std::move(player));
+    _world->AddEntity(std::move(enemy));
 }
 
 block::Game::~Game() {

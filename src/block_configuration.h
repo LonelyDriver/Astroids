@@ -8,6 +8,8 @@ namespace block
     const float PI = 3.1415;
     const int SHIPWIDTH = 99;
     const int SHIPHEIGHT = 75;
+    const int SAUCERWIDTH = 93;
+    const int SAUCERHEIGHT = 84;
 
     /**
      * @brief Creates random number between min to max.
@@ -18,6 +20,8 @@ namespace block
      * @return int 
      */
     int random_range(int min, int max);
+
+    
 } // namespace block
 
 

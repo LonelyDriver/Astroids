@@ -22,10 +22,14 @@ void block::Entity::OnDestroy() {
     _alive = false;
 }
 
-const Vector& block::Entity::GetPosition() const {
+const Vector block::Entity::GetPosition() const {
     return _position;
 }
 
 void block::Entity::SetPosition(const Vector& pos) {
     _position = pos;
+}
+
+const Vector block::Entity::GetDimension() const {
+    return _dimension;
 }

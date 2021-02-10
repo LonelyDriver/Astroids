@@ -28,7 +28,10 @@ add_library(block_library
     src/block_entity.cpp
     src/block_world.cpp
     src/block_hyperspace.cpp
-    src/block_configuration.cpp)
+    src/block_configuration.cpp
+    src/block_saucer.cpp
+    src/block_enemy.cpp
+    src/block_entity.cpp)
 target_include_directories(block_library PRIVATE src lib/Logging/include lib/Vector/include)
 target_link_libraries(block_library vector logger SDL2 SDL2_image SDL2_ttf SDL2_mixer)
 

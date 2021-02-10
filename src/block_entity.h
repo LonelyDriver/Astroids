@@ -31,8 +31,10 @@ namespace block
         virtual void OnDestroy();
 
         virtual void ProcessEvents() = 0;
-        const Vector& GetPosition() const;
+        const Vector GetPosition() const;
         void SetPosition(const Vector& pos);
+        const Vector GetDimension() const;
+
     };
 } // namespace block
 
