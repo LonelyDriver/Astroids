@@ -3,6 +3,7 @@
 
 block::Saucer::Saucer(SDL_Texture* texture, const Vector& position, Logger logger) :
 _logger(logger),
+_brain(),
 Enemy(texture, position)
 {
 
@@ -35,7 +36,7 @@ void block::Saucer::Render(SDL_Renderer* renderer) const {
         _texture,
         &src_rect,
         &dest_rect, 
-        NULL,
+        _brain.GetAngle(),
         NULL,
         SDL_RendererFlip::SDL_FLIP_NONE
     ) != 0) {
@@ -54,7 +55,11 @@ bool block::Saucer::IsCollide(const Entity& other) const {
 
 }
 void block::Saucer::Update(Uint32 time_ms) {
-    // KI 
+    const auto acceleration = _brain.Think();
+    _velocity += acceleration;
+    _velocity *= 0.9;
+    _velocity.SetLimit(1);
+    _position += _velocity;
 }
 void block::Saucer::OnDestroy() {
     Enemy::OnDestroy();

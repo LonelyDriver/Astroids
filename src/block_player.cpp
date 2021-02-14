@@ -31,9 +31,12 @@ void block::Player::Update(const Uint32 delta_time_ms) {
     _shoot_dt += delta_time_ms;
     if(_rotation != 0) {
         _angle += _rotation*180*seconds;
+        
     }
     if(_is_moving) {
+        // convert in radians 
         float angle = _angle / 180 * block::PI - block::PI / 2;
+        // std::sin/cos Computes the cosine of arg (measured in radians).
         Vector acceleration(std::cos(angle), std::sin(angle));
         _velocity += acceleration;
     }

@@ -2,12 +2,14 @@
 #define _BLOCK_SAUCER_H
 #include "block_enemy.h"
 #include "logging_manager.h"
+#include "block_ki.h"
 
 namespace block {
 
     class Saucer : public Enemy {
     private:
         Logger _logger;
+        IdleBrain _brain;
     public:
         Saucer(const Saucer&) = delete;
         Saucer& operator=(const Saucer&) = delete;
